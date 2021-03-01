@@ -6,4 +6,4 @@ use app\controllers\UserController;
 Route::get('/', function (){
     return 'Hello World';
 });
-Route::get('/register', [UserController::class, 'register']);
+Route::match(['get', 'post'], '/register', [UserController::class, 'register']);
