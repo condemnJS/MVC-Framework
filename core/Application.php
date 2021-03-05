@@ -1,10 +1,10 @@
 <?php
 
 
-namespace vendor\core;
+namespace core;
 
-use vendor\core\Route;
-use vendor\core\Request;
+use core\Route;
+use core\Request;
 
 class Application
 {
@@ -12,12 +12,14 @@ class Application
     public Route $router;
     public Request $request;
     public Response $response;
+    public DB $db;
     public static Application $app;
 
-    public function __construct(string $dirname)
+    public function __construct(string $dirname, array $config)
     {
         self::$ROOT_DIR = $dirname;
         self::$app = $this;
+        $this->db = new DB($config['db']);
         $this->request = new Request();
         $this->response = new Response();
         $this->router = new Route($this->request, $this->response);

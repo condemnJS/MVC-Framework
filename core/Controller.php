@@ -1,19 +1,19 @@
 <?php
 
 
-namespace vendor\core;
+namespace core;
 
 
 class Controller
 {
-    public function view(string $path, array $params)
+    public function view(string $path, array $params = [])
     {
         foreach ($params as $key => $param) {
-            $$key = $param;
+            $$key = $param; // Created variable name it is $key and value it is $param
         }
-//        var_dump($tatar);
         $path = $this->rebuildPath($path);
         require_once Application::$ROOT_DIR . "/app/views" . "/$path" . ".php";
+        return $this;
     }
 
     protected function rebuildPath(string $path)

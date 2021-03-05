@@ -1,8 +1,8 @@
 <?php
 
-namespace vendor\core;
+namespace core;
 
-use vendor\core\Request;
+use core\Request;
 
 class Route
 {
@@ -27,6 +27,13 @@ class Route
         self::$routes['post'][$path] = $callback;
     }
 
+    public static function match(array $params, string $path, $callback)
+    {
+        foreach ($params as $param) {
+            self::$routes[$param][$path] = $callback;
+        }
+    }
+
     public function resolve()
     {
         $path = $this->request->path();
@@ -37,25 +44,16 @@ class Route
             return "Not Found";
         }
         if (is_array($callback)) {
-            list($controllerPath, $controllerMethod) = $callback;
-            return call_user_func(array((new $controllerPath), $controllerMethod), $this->request);
+            $callback[0] = new $callback[0]();
         }
         return call_user_func($callback, $this->request);
-    }
-
-    public static function match(array $params, string $path, $callback)
-    {
-        foreach ($params as $param) {
-            self::$routes[$param][$path] = $callback;
-        }
     }
 
     public function render($callback)
     {
         $layoutContent = $this->layout();
-        $renderView = $this->renderView($callback[1]);
-        echo $renderView;
-//        echo str_replace('{{content}}', $renderView, $layoutContent);
+        $renderView = $this->renderOnlyView($callback[1]);
+        return str_replace('{{content}}', $renderView, $layoutContent);
     }
 
     protected function layout()
@@ -65,7 +63,7 @@ class Route
         return ob_get_clean();
     }
 
-    public function renderView($view)
+    public function renderOnlyView($view)
     {
         ob_start();
         include_once Application::$ROOT_DIR . "/app/views/$view.php";

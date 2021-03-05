@@ -2,18 +2,22 @@
 
 namespace app\controllers;
 
-use vendor\core\Application;
-use vendor\core\Controller;
-use vendor\core\Request;
+use core\Application;
+use core\Controller;
+use core\Request;
+use app\models\User;
 
 class UserController extends Controller
 {
     public function register(Request $request)
     {
-        if($request->method() === 'post') {
-            var_dump('post');
+        $user = new User();
+        if($request->isPost()) {
+            $user->loadData($request->all());
+            if($user->validate()) {
+            }
+            return $this->view('auth.register', compact('user'));
         }
-        $this->view('auth.register', ['id' => 'tatar']);
-//        Application::$app->router->renderView('auth/register');
+        return $this->view('auth.register', compact('user'));
     }
 }
