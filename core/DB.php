@@ -66,7 +66,7 @@ class DB
 
     public function saveMigrations(array $migrations)
     {
-        $strMigrations = implode( ',' ,array_map(fn($m) => "('$m')", $migrations));
+        $strMigrations = implode(',', array_map(fn($m) => "('$m')", $migrations));
         $statement = $this->connect->prepare("INSERT INTO migrations (migration) VALUES
             $strMigrations
         ");
@@ -75,6 +75,11 @@ class DB
 
     protected function log($message)
     {
-        echo '['.date('Y-m-d H:i:s').'] - ' . $message . PHP_EOL;
+        echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
+    }
+
+    public function prepare($sql)
+    {
+        return $this->connect->prepare($sql);
     }
 }
